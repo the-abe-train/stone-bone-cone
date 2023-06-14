@@ -74,8 +74,13 @@ export default function () {
       <div class="w-60 text-center flex flex-col justify-center">
         <form action="/demo" class="space-y-3">
           <input hidden type="text" name="queue" value={queue.join(",")} />
-          <p class="">Fill up the attack queue to play a practice game!</p>
-          <button class="p-2 bg-gray-200 rounded">Play a demo</button>
+          <p>Fill up the attack queue to play a practice game!</p>
+          <button
+            class="p-2 bg-gray-200 rounded"
+            disabled={queue.includes("nothing")}
+          >
+            Play a demo
+          </button>
         </form>
       </div>
     </div>

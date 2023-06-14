@@ -1,7 +1,7 @@
 import { QUEUE_LENGTH } from "./constants.ts";
-import { Attack, Battle, Player } from "./types.ts";
+import { Weapon, Battle, Player } from "./types.ts";
 
-export function runBattle(a1: Attack, a2: Attack) {
+export function runBattle(a1: Weapon, a2: Weapon) {
   // 0 = tie, 1 = a1 wins, 2 = a2 wins
   const attackMap = {
     stone: { stone: 0, bone: 1, cone: 2 },

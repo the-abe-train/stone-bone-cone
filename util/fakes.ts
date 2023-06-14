@@ -1,11 +1,11 @@
 import { QUEUE_LENGTH } from "./constants.ts";
-import { Attack } from "./types.ts";
+import { Weapon } from "./types.ts";
 
 function generateQueue() {
-  const attacks: Attack[] = ["stone", "bone", "cone"];
+  const attacks: Weapon[] = ["stone", "bone", "cone"];
   return [...Array(QUEUE_LENGTH)].map(() => {
     return attacks[Math.floor(Math.random() * attacks.length)];
-  }) as Attack[];
+  }) as Weapon[];
 }
 
 export function generateFakePlayers(numPlayers: number) {
