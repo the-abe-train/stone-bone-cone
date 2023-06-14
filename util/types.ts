@@ -4,3 +4,8 @@ export type Player = {
   name: string;
   queue: Attack[];
 };
+export type Battle = {
+  player1: Player;
+  player2: Player | null;
+  winner: Player[];
+};

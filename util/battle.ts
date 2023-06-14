@@ -1,7 +1,7 @@
 import { QUEUE_LENGTH } from "./constants.ts";
-import { Attack, Player } from "./types.ts";
+import { Attack, Battle, Player } from "./types.ts";
 
-function battle(a1: Attack, a2: Attack) {
+export function runBattle(a1: Attack, a2: Attack) {
   // 0 = tie, 1 = a1 wins, 2 = a2 wins
   const attackMap = {
     stone: { stone: 0, bone: 1, cone: 2 },
@@ -12,27 +12,38 @@ function battle(a1: Attack, a2: Attack) {
 }
 
 function battleQueue(p1: Player, p2: Player) {
+  const result: Battle = { player1: p1, player2: p2, winner: [] };
   for (let i = 0; i < QUEUE_LENGTH; i++) {
-    const winner = battle(p1.queue[i], p2.queue[i]);
+    const winner = runBattle(p1.queue[i], p2.queue[i]);
     if (winner === 1) {
       console.log(`${p1.name} beats ${p2.name} with ${p1.queue[i]}!`);
-      return [p1];
-    }
-    if (winner === 2) {
+      result.winner.push(p1);
+      return result;
+    } else if (winner === 2) {
       console.log(`${p2.name} beats ${p1.name} with ${p2.queue[i]}!`);
-      return [p2];
+      result.winner.push(p2);
+      return result;
     }
   }
   // If no winner, they both move on
   console.log(`${p1.name} and ${p2.name} tie!`);
-  return [p1, p2];
+  result.winner.push(p1, p2);
+  return result;
 }
 
 function completeRound(players: Player[]) {
-  const winners = [];
+  // const winners = [];
+  const fights: Battle[] = [];
   // If there are an odd number of players, pop one from the round and add him to the winner’s array
   if (players.length % 2 === 1) {
-    winners.push(players.pop()!);
+    const leftover = players.pop()!;
+    const result: Battle = {
+      player1: leftover,
+      player2: null,
+      winner: [leftover],
+    };
+    // winners.push(players.pop()!);
+    fights.push(result);
   }
 
   // Break down players into pairs
@@ -44,20 +55,36 @@ function completeRound(players: Player[]) {
 
   // Battle each pair
   for (const pair of pairs) {
-    winners.push(...battleQueue(pair[0], pair[1]));
+    const result = battleQueue(pair[0], pair[1]);
+    fights.push(result);
+    // const winner = result.winner
+    // winners.push(...winner);
   }
 
-  return winners;
+  return fights;
 }
 
+// TODO if the last 2 players tie, you get an infinite loop
 export function runTourney(players: Player[]) {
   let round = 1;
+  const roundResults = [];
   while (players.length > 1) {
     console.log(`Round ${round}`);
-    players = completeRound(players);
+    const shuffledPlayers = players.sort(() => Math.random() - 0.5);
+    const results = completeRound(shuffledPlayers);
+    roundResults.push(results);
+    const winners = results.map((result) => result.winner).flat();
+    if (players.length === winners.length) {
+      console.log("Final round tie!");
+      break;
+    }
+    players = winners;
     round++;
   }
   const winner = players[0];
   console.log(`Winner: ${winner.name}`);
-  return winner;
+  return roundResults;
 }
+
+// Turn the tourney into a tree data structure
+// Extract one player's journey through the tree
