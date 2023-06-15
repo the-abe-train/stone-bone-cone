@@ -99,7 +99,7 @@ export default function ({ data, url }: PageProps<Data>) {
             return (
               <a
                 href={`/tourney/${tourneyId}`}
-                class="p-2 w-2/3 bg-salmon rounded border hover:bg-[#FA7E61] transition-colors"
+                class="p-2 w-2/3 bg-salmon rounded shadow hover:bg-[#FA7E61] transition-colors"
                 style={{
                   fontWeight: isLastTourney ? "bold" : "normal",
                 }}
