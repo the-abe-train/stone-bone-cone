@@ -93,9 +93,7 @@ export default function ({ data, url }: PageProps<Data>) {
       </Head>
       <div className="col-span-2 space-y-8">
         <div class="flex flex-col space-y-2 p-2">
-          <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
-            Rankings
-          </h2>
+          <h2 class="text-2xl font-header">Rankings</h2>
           {last4Tourneys.map((tourneyId) => {
             const isLastTourney = tourneyId === nextTourneyId - 1;
             return (

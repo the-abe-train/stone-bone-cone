@@ -1,8 +1,8 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
-import { getCookies } from "https://deno.land/std@0.179.0/http/cookie.ts";
+import { getCookies } from "cookie";
 import { getUserFromSession } from "../util/queries.ts";
 import { redirectToLogin } from "../util/redirect.ts";
-import { Head } from "https://deno.land/x/fresh@1.1.6/runtime.ts";
+import { Head } from "$fresh/runtime.ts";
 
 type Data = {
   data: string;
@@ -49,45 +49,43 @@ export default function ({ data, url }: PageProps<Data>) {
       <Head>
         <title>Connect</title>
       </Head>
-      <div class="m-7 col-span-3">
-        <form
-          action="/dashboard"
-          class="inline-block w-full text-center w-40 m-12"
-        >
-          <button
-            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+      <div class="m-7 col-span-6">
+        <h2 class="text-2xl font-header">Profile</h2>
+        <div class="flex flex-wrap space-x-3 sm:space-x-8 p-3 justify-center">
+          <form action="/dashboard" class="inline-block text-center  p-3">
+            <button
+              class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
               border-black hover:bg-[#FA7E61] transition-colors"
+            >
+              Dashboard
+            </button>
+          </form>
+          <form action="" method="POST" class="inline-block text-center p-3">
+            <input readOnly name="action" value="logout" hidden />
+            <button
+              class="p-2 rounded text-lg shadow 
+           border-[#FDBEB0] border-2 hover:bg-[#FA7E61] transition-colors
+          disabled:opacity-50 disabled:hover:bg-[#FDBEB0] hover:border-[#FA7E61] "
+            >
+              Logout
+            </button>
+          </form>
+          <form
+            onSubmit={deleteAccount}
+            action=""
+            method="POST"
+            class="inline-block text-center p-3"
           >
-            Dashboard
-          </button>
-        </form>
-        <form
-          action=""
-          method="POST"
-          class="inline-block w-full text-center w-40 m-12"
-        >
-          <input readOnly name="action" value="logout" hidden />
-          <button
-            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
-              border-black hover:bg-[#FA7E61] transition-colors"
-          >
-            Logout
-          </button>
-        </form>
-        <form
-          onSubmit={deleteAccount}
-          action=""
-          method="POST"
-          class="inline-block w-full text-center w-40 m-12"
-        >
-          <input readOnly name="action" value="delete-account" hidden />
-          <button
-            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
-              border-black hover:bg-[#FA7E61] transition-colors"
-          >
-            Delete account
-          </button>
-        </form>
+            <input readOnly name="action" value="delete-account" hidden />
+            <button
+              class="p-2 rounded text-lg shadow 
+           border-[#FDBEB0] border-2 hover:bg-[#FA7E61] transition-colors
+          disabled:opacity-50 disabled:hover:bg-[#FDBEB0] hover:border-[#FA7E61] "
+            >
+              Delete account
+            </button>
+          </form>
+        </div>
       </div>
     </>
   );
