@@ -64,8 +64,14 @@ export default function App({ Component }: AppProps) {
             <Component />
           </main>
         </div>
-        <footer class="mt-8 p-3">
+        <footer class="mt-8 p-3 flex w-full justify-between">
           <p>made by The Abe Train for the Deno KV Hackathon, June 15, 2023</p>
+          <a
+            class="underline"
+            href="https://github.com/the-abe-train/stone-bone-cone"
+          >
+            View the code on GitHub
+          </a>
         </footer>
       </div>
     </>
