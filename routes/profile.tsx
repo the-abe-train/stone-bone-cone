@@ -29,7 +29,6 @@ export const handler: Handlers = {
       return redirectToLogin(req, "Alert:_User_signed_out.");
     }
     if (action === "delete-account") {
-      // TODO atomize deletes?
       await Promise.all([
         await kv.delete(["sessions", authCookie]),
         await kv.delete(["users", user.name]),
@@ -55,7 +54,12 @@ export default function ({ data, url }: PageProps<Data>) {
           action="/dashboard"
           class="inline-block w-full text-center w-40 m-12"
         >
-          <button class="p-2 bg-gray-200 rounded mx-auto">Dashboard</button>
+          <button
+            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+              border-black hover:bg-[#FA7E61] transition-colors"
+          >
+            Dashboard
+          </button>
         </form>
         <form
           action=""
@@ -63,7 +67,12 @@ export default function ({ data, url }: PageProps<Data>) {
           class="inline-block w-full text-center w-40 m-12"
         >
           <input readOnly name="action" value="logout" hidden />
-          <button class="p-2 bg-gray-200 rounded mx-auto">Logout</button>
+          <button
+            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+              border-black hover:bg-[#FA7E61] transition-colors"
+          >
+            Logout
+          </button>
         </form>
         <form
           onSubmit={deleteAccount}
@@ -72,7 +81,10 @@ export default function ({ data, url }: PageProps<Data>) {
           class="inline-block w-full text-center w-40 m-12"
         >
           <input readOnly name="action" value="delete-account" hidden />
-          <button class="p-2 bg-gray-200 rounded mx-auto">
+          <button
+            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+              border-black hover:bg-[#FA7E61] transition-colors"
+          >
             Delete account
           </button>
         </form>

@@ -153,35 +153,45 @@ export default function ({ data, url, params }: PageProps<Data>) {
           const p1 = match.player1;
           const p2 = match.player2;
           return (
-            <div class="flex m-2 space-x-2">
-              <p class="text-lg w-24">Round {round}</p>
-              <div>
+            <div class="flex mx-2 my-4 space-x-2">
+              <p class="text-xl w-24" style={{ fontFamily: "Lilita One" }}>
+                Round {round}
+              </p>
+              <div class="bg-gray-100 rounded border border-black p-2 w-72">
                 <DisplayRound round={round} p1={p1} p2={p2} />
               </div>
             </div>
           );
         })}
       </div>
-      <div class="space-y-4 col-span-3">
+      <div class="space-y-12 col-span-3 flex flex-col items-center">
         {youParticipated && (
-          <div>
-            <p>Your attacks</p>
+          <div class="space-y-4">
+            <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
+              {" "}
+              Your attacks
+            </h2>
             <div class="flex space-x-2">
               {yourQueue?.map((w) => (
                 <img src={`/${w}.png`} alt={w} width={50} />
               ))}
             </div>
+            {isDemo && (
+              <form action="/" class="inline-block w-full text-center">
+                <button
+                  class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+              border-black hover:bg-[#FA7E61] transition-colors"
+                >
+                  Pick new attacks
+                </button>
+              </form>
+            )}
           </div>
         )}
-        {isDemo && (
-          <form action="/" class="inline-block w-full text-center">
-            <button class="p-2 bg-gray-200 rounded mx-auto">
-              Pick new attacks
-            </button>
-          </form>
-        )}
-        <div>
-          <p>Total weapon usage</p>
+        <div class="space-y-2 my-6">
+          <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
+            Tourney Stats
+          </h2>
           <div class="flex space-x-5">
             {WEAPONS.map((x) => {
               return (
@@ -202,18 +212,24 @@ export default function ({ data, url, params }: PageProps<Data>) {
           {/* <p>{loserStr}</p> */}
         </div>
         {isDemo ? (
-          <div>
+          <div class="space-y-4">
             <form
               action={url.toString()}
-              class="inline-block w-full text-center"
+              class="inline-block w-full text-center "
             >
               <input hidden type="text" name="queue" value={queueParam!} />
-              <button class="p-2 bg-gray-200 rounded mx-auto">
+              <button
+                class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+          border-black hover:bg-[#FA7E61] transition-colors"
+              >
                 Re-run tournament
               </button>
             </form>
             <form action="/connect" class="inline-block w-full text-center">
-              <button class="p-2 bg-gray-200 rounded mx-auto">
+              <button
+                class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+          border-black hover:bg-[#FA7E61] transition-colors"
+              >
                 Connect & play
               </button>
             </form>
@@ -221,7 +237,10 @@ export default function ({ data, url, params }: PageProps<Data>) {
         ) : (
           <div>
             <form action="/dashboard" class="inline-block w-full text-center">
-              <button class="p-2 bg-gray-200 rounded mx-auto">
+              <button
+                class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+          border-black hover:bg-[#FA7E61] transition-colors"
+              >
                 Prepare for next tourney!
               </button>
             </form>

@@ -17,13 +17,13 @@ export default function ({ queue, setQueue }: Props) {
   }, [queue]);
   return (
     <div class="text-center space-y-4 max-w-screen-sm w-full">
-      <div class="flex justify-around">
+      <div class="flex justify-around space-x-2">
         {[...Array(QUEUE_LENGTH)].map((_, i) => {
           return (
             <div
-              class={`p-0 bg-gray-200 border-black rounded box-border
+              class={`p-0 bg-[#FDBEB0] border-black rounded box-border
               flex flex-col justify-center items-center w-24 h-24
-               ${target === i ? "border-4" : ""}`}
+               ${target === i ? "border-4" : "border"}`}
               onClick={() => setTarget(i)}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {

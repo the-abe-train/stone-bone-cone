@@ -1,15 +1,37 @@
 import { Head } from "$fresh/runtime.ts";
+import { Handlers, PageProps } from "https://deno.land/x/fresh@1.1.6/server.ts";
 import DemoSelector from "../islands/DemoSelector.tsx";
+import { getNextTourney } from "../util/tourney.ts";
 
-// TODO replace time string with actual countdown
+type Data = {
+  nextTourneyId: number;
+  nextTourneyTime: string;
+};
 
-export default function Home() {
+export const handler: Handlers<Data> = {
+  async GET(req, ctx) {
+    const nextTourney = await getNextTourney();
+    if (!nextTourney)
+      return new Response("Error: No tourney found", {
+        status: 500,
+      });
+
+    return ctx.render!({
+      nextTourneyId: nextTourney.id,
+      nextTourneyTime: nextTourney.time,
+    });
+  },
+};
+
+export default function ({ data }: PageProps<Data>) {
+  const { nextTourneyId, nextTourneyTime } = data;
+
   return (
     <>
       <Head>
         <title>Stone, Bone, Cone</title>
       </Head>
-      <div class="col-span-4 space-y-4">
+      <div class="col-span-4 space-y-6 m-2">
         <p>
           Every 12 hours, all the cavepeople get together and have a battle
           royale!
@@ -27,13 +49,20 @@ export default function Home() {
         </p>
         <p>
           Use this screen to practice, and when you're ready, set up your
-          caveperson for the next game! <b>Tourney 11 starts in 3h 15m</b>.
+          caveperson for the next game!{" "}
+          <b>
+            Tourney {nextTourneyId} starts in {nextTourneyTime}.
+          </b>
+          .
         </p>
       </div>
       <div class="col-span-2 px-4 space-y-4">
         <img src="/caveman.png" alt="Caveperson" width={150} class="mx-auto" />
         <form action="/connect" class="inline-block w-full text-center">
-          <button class="p-2 bg-gray-200 rounded mx-auto">
+          <button
+            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+          font-bold border-black hover:bg-[#FA7E61] transition-colors"
+          >
             Connect & play
           </button>
         </form>

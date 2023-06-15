@@ -9,13 +9,21 @@ export default function () {
   // Check if queue contains nulls
   const queueIsFull = queue.findIndex((x) => !x) === -1;
   return (
-    <div class="m-4 flex justify-around bg-gray-100 border rounded p-4">
+    <div
+      class="m-6 flex justify-around bg-[#CAC1A9] border rounded p-4
+    shadow border border-black"
+    >
       <Selector queue={queue} setQueue={setQueue} />
       <div class="w-60 text-center flex flex-col justify-center">
         <form action="/tourney/demo" class="space-y-3">
           <input hidden type="text" name="queue" value={queue.join(",")} />
           <p>Fill up the attack queue to play a practice game!</p>
-          <button class="p-2 bg-gray-200 rounded" disabled={!queueIsFull}>
+          <button
+            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+          font-bold border-black hover:bg-[#FA7E61] transition-colors
+          disabled:opacity-50 disabled:hover:bg-[#FDBEB0]"
+            disabled={!queueIsFull}
+          >
             Play a demo
           </button>
         </form>

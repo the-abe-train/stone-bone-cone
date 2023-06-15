@@ -93,13 +93,15 @@ export default function ({ data, url }: PageProps<Data>) {
       </Head>
       <div className="col-span-2 space-y-8">
         <div class="flex flex-col space-y-2">
-          <h2 class="text-xl">Rankings</h2>
+          <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
+            Rankings
+          </h2>
           {last4Tourneys.map((tourneyId) => {
             const isLastTourney = tourneyId === nextTourneyId - 1;
             return (
               <a
                 href={`/tourney/${tourneyId}`}
-                class="p-2 w-2/3 bg-gray-100 rounded"
+                class="p-2 w-2/3 bg-salmon rounded border hover:bg-[#FA7E61] transition-colors"
                 style={{
                   fontWeight: isLastTourney ? "bold" : "normal",
                 }}
@@ -113,7 +115,9 @@ export default function ({ data, url }: PageProps<Data>) {
           </a>
         </div>
         <div class="space-y-2">
-          <h2 class="text-xl">Username: {data.user.name}</h2>
+          <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
+            Username: {data.user.name}
+          </h2>
           <img
             src="/caveman.png"
             alt="Caveperson"
@@ -122,21 +126,29 @@ export default function ({ data, url }: PageProps<Data>) {
           />
 
           <div class="flex w-full justify-evenly">
-            <form action="/demo" class="inline-block w-full space-y-2">
-              <button class="p-2 bg-gray-200 rounded mx-auto block">
-                Rules & Demo{" "}
+            <form action="/demo" class="inline-block ">
+              <button
+                class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+              border-black hover:bg-[#FA7E61] transition-colors"
+              >
+                Rules & Demo
               </button>
             </form>
-            <form action="/profile" class="inline-block w-full">
-              <button class="p-2 bg-gray-200 rounded mx-auto block">
+            <form action="/profile" class="inline-block ">
+              <button
+                class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+              border-black hover:bg-[#FA7E61] transition-colors"
+              >
                 Profile
               </button>
             </form>
           </div>
         </div>
       </div>
-      <div class="col-span-4 space-y-2 text-center">
-        <h2 class="text-xl">Choose your weapons!</h2>
+      <div class="col-span-4 space-y-4 text-center">
+        <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
+          Choose your weapons!
+        </h2>
         <p>Set up the order of your attacks using the weapons below.</p>
         <p>
           Tourney {nextTourneyId} starts in {nextTourneyTime}.

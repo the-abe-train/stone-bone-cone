@@ -9,7 +9,7 @@ function DisplayFight({ weapons }: { weapons: { w1: Weapon; w2: Weapon }[] }) {
         const resultString =
           result === 1 ? "beats" : result === 0 ? "ties with" : "loses to";
         return (
-          <div class="flex space-x-2 items-center">
+          <div class="flex space-x-2 items-center justify-center">
             <img src={`/${w1}.png`} alt={w1} width={50} />
             <p>{resultString}</p>
             <img src={`/${w2}.png`} alt={w2} width={50} />
@@ -55,8 +55,8 @@ export function DisplayRound({ round, p1, p2 }: DisplayRoundProps) {
   }
 
   return (
-    <div>
-      <p>
+    <div class="mx-auto w-fit">
+      <p class="text-lg w-3/4">
         {p1.name} vs. {p2.name}
       </p>
       <DisplayFight weapons={weapons} />
