@@ -104,7 +104,7 @@ type Data = {
   };
 };
 
-export default function ({ params, data, url }: PageProps<Data>) {
+export default function ({ data, url }: PageProps<Data>) {
   const { userMatches, weaponStats, tourneyStats } = data;
   const searchParams = new URLSearchParams(url.search);
   const queueParam = searchParams.get("queue");

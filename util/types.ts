@@ -9,3 +9,12 @@ export type Battle = {
   player2: Player | null;
   winner: Player[];
 };
+
+export type User = {
+  name: string;
+  password: string;
+};
+
+export type Session = {
+  user: string;
+};
