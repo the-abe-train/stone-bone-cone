@@ -27,8 +27,9 @@ export type Tourney = {
   attacks: Record<Weapon, number>;
 };
 
+// Key: results, tourney id, user, round number
 export type Ranking = {
-  opponent: string;
   userWeapons: Weapon[];
-  opponentWeapons: Weapon[];
+  opponent?: string;
+  opponentWeapons?: Weapon[];
 };

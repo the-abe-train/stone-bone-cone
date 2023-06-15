@@ -82,21 +82,3 @@ export async function loadFakeTourneys() {
     await kv.set(["tourneys", i], tourney);
   });
 }
-
-// export async function loadFakeRankings() {
-//   // For the 5 most recent tourneys, load rankings for player "hammy"
-
-//   // Get 5 most recent tourneys
-//   const allTourneys = kv.list<Tourney>(
-//     { prefix: ["tourneys"] },
-//     { reverse: true }
-//   );
-//   const tourneys = [];
-//   for await (const tourney of allTourneys) {
-//     tourneys.push(tourney);
-//     if (tourneys.length === 5) break;
-//   }
-
-//   // For each tourney,
-
-// }

@@ -64,8 +64,7 @@ function completeRound(players: Player[]) {
   return fights;
 }
 
-// TODO if the last 2 players tie, you get an infinite loop
-export function runTourney(players: Player[]) {
+export function runTourneyDemo(players: Player[]) {
   let round = 1;
   const roundResults = [];
   while (players.length > 1) {
@@ -86,5 +85,94 @@ export function runTourney(players: Player[]) {
   return roundResults;
 }
 
+const kv = await Deno.openKv();
+
+async function getPlayers(tourneyId: number) {
+  const allQueues = kv.list<Weapon[]>({ prefix: ["attacks", tourneyId] });
+  const players = [];
+  for await (const queue of allQueues) {
+    const player: Player = {
+      name: String(queue.key[2]),
+      queue: queue.value,
+    };
+    players.push(player);
+  }
+  return players;
+}
+
+export async function runTourneyKv(tourneyId: number, time: string) {
+  // Get all players with queues for this tourney from KV
+  let players = await getPlayers(tourneyId);
+
+  let round = 1;
+  const roundResults = [];
+  while (players.length > 1) {
+    console.log(`Round ${round}`);
+    const shuffledPlayers = players.sort(() => Math.random() - 0.5);
+    const results = completeRound(shuffledPlayers);
+    roundResults.push(results);
+    const winners = results.map((result) => result.winner).flat();
+    if (players.length === winners.length) {
+      console.log("Final round tie!");
+      break;
+    }
+    players = winners;
+
+    // Save the results of this round to KV
+    for (const result of results) {
+      const p1 = result.player1;
+      const p1Key = ["results", tourneyId, p1.name, round];
+      await kv.set(p1Key, {
+        userWeapons: p1.queue,
+        opponent: result.player2?.name,
+        opponentWeapons: result.player2?.queue,
+      });
+
+      if (result.player2) {
+        const p2 = result.player2;
+        const p2Key = ["results", tourneyId, p2.name, round];
+        await kv.set(p2Key, {
+          userWeapons: p2.queue,
+          opponent: result.player1?.name,
+          opponentWeapons: result.player1?.queue,
+        });
+      }
+    }
+
+    round++;
+  }
+  const winner = players[0];
+  console.log(`Winner: ${winner.name}`);
+
+  // Save tourney to KV
+  const tourneyKey = ["tourney", tourneyId];
+  const weaponStats = calcWeaponStats(roundResults);
+  await kv.set(tourneyKey, {
+    time,
+    winner: winner.name,
+    attacks: weaponStats,
+  });
+
+  return roundResults;
+}
+
 // Turn the tourney into a tree data structure
 // Extract one player's journey through the tree
+
+export function calcWeaponStats(results: Battle[][]) {
+  const weaponStats = {
+    stone: 0,
+    bone: 0,
+    cone: 0,
+  };
+  const allRounds = results.flat();
+  for (const match of allRounds) {
+    for (const w of match.player1.queue) {
+      weaponStats[w]++;
+    }
+    for (const w of match.player2?.queue ?? []) {
+      weaponStats[w]++;
+    }
+  }
+  return weaponStats;
+}

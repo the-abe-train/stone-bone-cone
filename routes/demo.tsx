@@ -1,7 +1,7 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import { Head } from "https://deno.land/x/fresh@1.1.6/runtime.ts";
 import { DisplayRound } from "../components/DisplayRound.tsx";
-import { runTourney } from "../util/battle.ts";
+import { calcWeaponStats, runTourneyDemo } from "../util/battle.ts";
 import { FAKE_PLAYERS, WEAPONS } from "../util/constants.ts";
 import { generateFakePlayers } from "../util/fakes.ts";
 import { Weapon, Battle, Player } from "../util/types.ts";
@@ -28,7 +28,7 @@ export const handler: Handlers<Data> = {
     const players = [...fakePlayers, user];
 
     // Run tournament
-    const results = runTourney(players);
+    const results = runTourneyDemo(players);
 
     // Pull the results involving the user
     const userMatches: Battle[] = [];
@@ -54,21 +54,7 @@ export const handler: Handlers<Data> = {
     }
 
     // Weapons stats
-    const weaponStats = {
-      stone: 0,
-      bone: 0,
-      cone: 0,
-    };
-    const allRounds = results.flat();
-    for (const match of allRounds) {
-      for (const w of match.player1.queue) {
-        weaponStats[w]++;
-      }
-      for (const w of match.player2?.queue ?? []) {
-        weaponStats[w]++;
-      }
-    }
-    console.log(weaponStats);
+    const weaponStats = calcWeaponStats(results);
 
     // Tournament stats
     const winners = results[results.length - 1][0].winner;
