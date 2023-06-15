@@ -1,5 +1,5 @@
 import { Head } from "$fresh/runtime.ts";
-import { Handlers, PageProps } from "https://deno.land/x/fresh@1.1.6/server.ts";
+import { Handlers, PageProps } from "$fresh/server.ts";
 import DemoSelector from "../islands/DemoSelector.tsx";
 import { getNextTourney, loadFakeTourneys } from "../util/tourney.ts";
 
@@ -11,17 +11,19 @@ type Data = {
 export const handler: Handlers<Data> = {
   async GET(req, ctx) {
     const nextTourney = await getNextTourney();
-    if (!nextTourney) {
+    if (nextTourney)
+      return ctx.render!({
+        nextTourneyId: nextTourney.id,
+        nextTourneyTime: nextTourney.time,
+      });
+    else {
       await loadFakeTourneys();
-      return new Response("Error: No tourney found", {
-        status: 500,
+      const nextTourney = await getNextTourney();
+      return ctx.render!({
+        nextTourneyId: nextTourney?.id || 0,
+        nextTourneyTime: nextTourney?.time || "never",
       });
     }
-
-    return ctx.render!({
-      nextTourneyId: nextTourney.id,
-      nextTourneyTime: nextTourney.time,
-    });
   },
 };
 

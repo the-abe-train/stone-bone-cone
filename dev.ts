@@ -5,6 +5,6 @@ import { loadFakeTourneys } from "./util/tourney.ts";
 
 Deno.env.set("MODE", "dev");
 
-await loadFakeTourneys();
+// await loadFakeTourneys();
 
 await dev(import.meta.url, "./main.ts");

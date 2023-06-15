@@ -11,9 +11,7 @@ export async function getNextTourney() {
   );
   const lastTourneyIter = await allTourneys.next();
   const lastTourney = lastTourneyIter.value;
-  if (!lastTourney) {
-    throw new Error("No tourneys found");
-  }
+  if (!lastTourney) return;
   const lastTourneyNumber = Number(lastTourney.key[1]) ?? 0;
   const lastTourneyTime = new Date(lastTourney.value.time);
   const nextTourneyUtc = new Date(
@@ -49,6 +47,8 @@ export async function loadFakeTourneys() {
   for await (const tourney of allTourneys) {
     await kv.delete(tourney.key);
   }
+
+  console.log("Adding fake tourneys");
 
   const times = [];
   let day = START_DATE;
