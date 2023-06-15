@@ -2222,3 +2222,5 @@ declare class WebSocketStream {
   closed: Promise<WebSocketCloseInfo>;
   close(closeInfo?: WebSocketCloseInfo): void;
 }
+
+// https://raw.githubusercontent.com/denoland/deno/v1.34.2/cli/tsc/dts/lib.deno.unstable.d.ts

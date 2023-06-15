@@ -18,3 +18,15 @@ export type User = {
 export type Session = {
   user: string;
 };
+
+export type Tourney = {
+  time: string;
+  winner: string;
+  attacks: Record<Weapon, number>;
+};
+
+export type Ranking = {
+  opponent: string;
+  userWeapons: Weapon[];
+  opponentWeapons: Weapon[];
+};

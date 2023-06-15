@@ -2,6 +2,7 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { getCookies } from "https://deno.land/std@0.179.0/http/cookie.ts";
 import { getUserFromSession } from "../util/queries.ts";
 import { redirectToLogin } from "../util/redirect.ts";
+import { Head } from "https://deno.land/x/fresh@1.1.6/runtime.ts";
 
 type Data = {
   data: string;
@@ -45,32 +46,37 @@ export default function ({ data, url }: PageProps<Data>) {
     if (!answer) e.preventDefault();
   }
   return (
-    <div>
-      <h1 class="text-3xl text-center">Stone, Bone, Cone</h1>
-      <h2>Profile</h2>
-      <form
-        action="/dashboard"
-        class="inline-block w-full text-center w-40 m-12"
-      >
-        <button class="p-2 bg-gray-200 rounded mx-auto">Dashboard</button>
-      </form>
-      <form
-        action=""
-        method="POST"
-        class="inline-block w-full text-center w-40 m-12"
-      >
-        <input readOnly name="action" value="logout" hidden />
-        <button class="p-2 bg-gray-200 rounded mx-auto">Logout</button>
-      </form>
-      <form
-        onSubmit={deleteAccount}
-        action=""
-        method="POST"
-        class="inline-block w-full text-center w-40 m-12"
-      >
-        <input readOnly name="action" value="delete-account" hidden />
-        <button class="p-2 bg-gray-200 rounded mx-auto">Delete account</button>
-      </form>
-    </div>
+    <>
+      <Head>
+        <title>Connect</title>
+      </Head>
+      <div class="m-7 col-span-3">
+        <form
+          action="/dashboard"
+          class="inline-block w-full text-center w-40 m-12"
+        >
+          <button class="p-2 bg-gray-200 rounded mx-auto">Dashboard</button>
+        </form>
+        <form
+          action=""
+          method="POST"
+          class="inline-block w-full text-center w-40 m-12"
+        >
+          <input readOnly name="action" value="logout" hidden />
+          <button class="p-2 bg-gray-200 rounded mx-auto">Logout</button>
+        </form>
+        <form
+          onSubmit={deleteAccount}
+          action=""
+          method="POST"
+          class="inline-block w-full text-center w-40 m-12"
+        >
+          <input readOnly name="action" value="delete-account" hidden />
+          <button class="p-2 bg-gray-200 rounded mx-auto">
+            Delete account
+          </button>
+        </form>
+      </div>
+    </>
   );
 }

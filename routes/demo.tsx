@@ -13,7 +13,12 @@ export const handler: Handlers<Data> = {
     const searchParams = new URLSearchParams(url.search);
     const queueParam = searchParams.get("queue");
     if (!queueParam) {
-      throw "Demo failed.";
+      const headers = new Headers();
+      headers.set("location", "/");
+      return new Response(null, {
+        status: 303,
+        headers,
+      });
     }
     const userQueue = queueParam.split(",").map((x) => x as Weapon);
     const user = { name: "You", queue: userQueue };
@@ -125,75 +130,68 @@ export default function ({ data, url }: PageProps<Data>) {
       <Head>
         <title>Stone, Bone, Cone</title>
       </Head>
-      <div class="p-4 mx-auto max-w-screen-lg space-y-5">
-        <h1 class="text-3xl text-center">Stone, Bone, Cone</h1>
-        <main class="grid grid-cols-6">
-          <div class="col-span-3">
-            {userMatches.map((match, idx) => {
-              const round = idx + 1;
-              const p1 = match.player1;
-              const p2 = match.player2;
+
+      <div class="col-span-3">
+        {userMatches.map((match, idx) => {
+          const round = idx + 1;
+          const p1 = match.player1;
+          const p2 = match.player2;
+          return (
+            <div class="flex m-2 space-x-2">
+              <p class="text-lg w-24">Round {round}</p>
+              <div>
+                <DisplayRound round={round} p1={p1} p2={p2} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div class="space-y-4 col-span-3">
+        <div>
+          <p>Your attacks</p>
+          <div class="flex space-x-2">
+            {yourQueue?.map((w) => (
+              <img src={`/${w}.png`} alt={w} width={50} />
+            ))}
+          </div>
+        </div>
+        <form action="/" class="inline-block w-full text-center">
+          <button class="p-2 bg-gray-200 rounded mx-auto">
+            Pick new attacks
+          </button>
+        </form>
+        <div>
+          <p>Total weapon usage</p>
+          <div class="flex space-x-5">
+            {WEAPONS.map((x) => {
               return (
-                <div class="flex m-2 space-x-2">
-                  <p class="text-lg w-24">Round {round}</p>
-                  <div>
-                    <DisplayRound round={round} p1={p1} p2={p2} />
-                  </div>
+                <div class="flex flex-col justify-center items-center">
+                  <img
+                    src={`/${x}.png`}
+                    alt={x}
+                    width={80}
+                    class="inline-block"
+                  />
+                  <p>{weaponStats[x]}</p>
                 </div>
               );
             })}
           </div>
-          <div class="space-y-4 col-span-3">
-            <div>
-              <p>Your attacks</p>
-              <div class="flex space-x-2">
-                {yourQueue?.map((w) => (
-                  <img src={`/${w}.png`} alt={w} width={50} />
-                ))}
-              </div>
-            </div>
-            <form action="/" class="inline-block w-full text-center">
-              <button class="p-2 bg-gray-200 rounded mx-auto">
-                Pick new attacks
-              </button>
-            </form>
-            <div>
-              <p>Total weapon usage</p>
-              <div class="flex space-x-5">
-                {WEAPONS.map((x) => {
-                  return (
-                    <div class="flex flex-col justify-center items-center">
-                      <img
-                        src={`/${x}.png`}
-                        alt={x}
-                        width={80}
-                        class="inline-block"
-                      />
-                      <p>{weaponStats[x]}</p>
-                    </div>
-                  );
-                })}
-              </div>
-              <p>{winnerStr}</p>
-              <p>{roundStr}</p>
-              <p>{loserStr}</p>
-            </div>
-            <form
-              action={url.toString()}
-              class="inline-block w-full text-center"
-            >
-              <input hidden type="text" name="queue" value={queueParam!} />
-              <button class="p-2 bg-gray-200 rounded mx-auto">
-                Re-run tournament
-              </button>
-            </form>
-            <form action="/connect" class="inline-block w-full text-center">
-              <button class="p-2 bg-gray-200 rounded mx-auto">
-                Connect & play
-              </button>
-            </form>
-          </div>
-        </main>
+          <p>{winnerStr}</p>
+          <p>{roundStr}</p>
+          <p>{loserStr}</p>
+        </div>
+        <form action={url.toString()} class="inline-block w-full text-center">
+          <input hidden type="text" name="queue" value={queueParam!} />
+          <button class="p-2 bg-gray-200 rounded mx-auto">
+            Re-run tournament
+          </button>
+        </form>
+        <form action="/connect" class="inline-block w-full text-center">
+          <button class="p-2 bg-gray-200 rounded mx-auto">
+            Connect & play
+          </button>
+        </form>
       </div>
     </>
   );

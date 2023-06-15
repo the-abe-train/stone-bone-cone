@@ -4,6 +4,7 @@ import { User } from "../util/types.ts";
 import { newSession, redirectToLogin } from "../util/redirect.ts";
 import { getUserFromSession } from "../util/queries.ts";
 import { getCookies, deleteCookie } from "cookie";
+import { Head } from "$fresh/runtime.ts";
 
 type Data = {
   message?: string;
@@ -15,7 +16,7 @@ export const handler: Handlers<Data> = {
     const user = await getUserFromSession(req.headers);
     if (user) {
       const headers = new Headers();
-      headers.set("location", "/profile");
+      headers.set("location", "/dashboard");
       return new Response(null, {
         status: 303,
         headers,
@@ -98,46 +99,51 @@ export const handler: Handlers<Data> = {
 
 export default function ({ data, url }: PageProps<Data>) {
   return (
-    <div class="m-7">
-      <p class="my-2">Fill out this form to connect your account.</p>
-      <form method="post" action="" class="space-y-5 flex flex-col w-80">
-        <div class="space-x-2">
-          <label htmlFor="username" class="w-20 inline-block">
-            Username:
-          </label>
-          <input
-            class="p-1 border"
-            autofocus
-            type="text"
-            name="username"
-            maxLength={15}
-            minLength={5}
-            required
-          />
-        </div>
-        <div class="space-x-2">
-          <label htmlFor="username" class="w-20 inline-block">
-            Password:
-          </label>
-          <input
-            class="p-1 border"
-            type="password"
-            name="password"
-            minLength={5}
-            maxLength={20}
-            required
-          />
-        </div>
-        <button
-          class="p-3 bg-blue-100 disabled:bg-gray-100 disabled:cursor-auto
+    <>
+      <Head>
+        <title>Connect</title>
+      </Head>
+      <div class="m-7 col-span-3">
+        <p class="my-2">Fill out this form to connect your account.</p>
+        <form method="post" action="" class="space-y-5 flex flex-col w-80">
+          <div class="space-x-2">
+            <label htmlFor="username" class="w-20 inline-block">
+              Username:
+            </label>
+            <input
+              class="p-1 border"
+              autofocus
+              type="text"
+              name="username"
+              maxLength={15}
+              minLength={5}
+              required
+            />
+          </div>
+          <div class="space-x-2">
+            <label htmlFor="username" class="w-20 inline-block">
+              Password:
+            </label>
+            <input
+              class="p-1 border"
+              type="password"
+              name="password"
+              minLength={5}
+              maxLength={20}
+              required
+            />
+          </div>
+          <button
+            class="p-3 bg-blue-100 disabled:bg-gray-100 disabled:cursor-auto
   rounded shadow hover:bg-blue-200 transition-colors duration-300
   mx-auto w-max"
-          type="submit"
-        >
-          Submit
-        </button>
-      </form>
-      {data?.message && <p class="my-2">{data.message}</p>}
-    </div>
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
+        {data?.message && <p class="my-2">{data.message}</p>}
+      </div>
+    </>
   );
 }

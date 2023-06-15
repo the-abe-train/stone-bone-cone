@@ -10,6 +10,7 @@
     "twind/": "https://esm.sh/twind@0.16.19/",
     "$std/": "https://deno.land/std@0.187.0/",
     "bcrypt": "https://deno.land/x/bcrypt@v0.2.4/mod.ts",
-    "cookie": "https://deno.land/std@0.179.0/http/cookie.ts"
+    "cookie": "https://deno.land/std@0.179.0/http/cookie.ts",
+    "datetime": "https://deno.land/std@0.179.0/datetime/mod.ts"
   }
 }
