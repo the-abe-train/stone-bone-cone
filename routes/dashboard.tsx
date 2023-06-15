@@ -110,9 +110,6 @@ export default function ({ data, url }: PageProps<Data>) {
               </a>
             );
           })}
-          <a href={`/tourney/`} class="underline">
-            See more...
-          </a>
         </div>
         <div class="space-y-2 p-2">
           <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>

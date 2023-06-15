@@ -3,30 +3,28 @@
 // This file is automatically updated during development when running `dev.ts`.
 
 import config from "./deno.json" assert { type: "json" };
-import * as $0 from "./routes/[name].tsx";
-import * as $1 from "./routes/_app.tsx";
-import * as $2 from "./routes/api/runTourney.ts";
-import * as $3 from "./routes/connect.tsx";
-import * as $4 from "./routes/dashboard.tsx";
-import * as $5 from "./routes/demo.tsx";
-import * as $6 from "./routes/index.tsx";
-import * as $7 from "./routes/profile.tsx";
-import * as $8 from "./routes/tourney/[id].tsx";
+import * as $0 from "./routes/_app.tsx";
+import * as $1 from "./routes/api/runTourney.ts";
+import * as $2 from "./routes/connect.tsx";
+import * as $3 from "./routes/dashboard.tsx";
+import * as $4 from "./routes/demo.tsx";
+import * as $5 from "./routes/index.tsx";
+import * as $6 from "./routes/profile.tsx";
+import * as $7 from "./routes/tourney/[id].tsx";
 import * as $$0 from "./islands/DemoSelector.tsx";
 import * as $$1 from "./islands/GameSelector.tsx";
 import * as $$2 from "./islands/Selector.tsx";
 
 const manifest = {
   routes: {
-    "./routes/[name].tsx": $0,
-    "./routes/_app.tsx": $1,
-    "./routes/api/runTourney.ts": $2,
-    "./routes/connect.tsx": $3,
-    "./routes/dashboard.tsx": $4,
-    "./routes/demo.tsx": $5,
-    "./routes/index.tsx": $6,
-    "./routes/profile.tsx": $7,
-    "./routes/tourney/[id].tsx": $8,
+    "./routes/_app.tsx": $0,
+    "./routes/api/runTourney.ts": $1,
+    "./routes/connect.tsx": $2,
+    "./routes/dashboard.tsx": $3,
+    "./routes/demo.tsx": $4,
+    "./routes/index.tsx": $5,
+    "./routes/profile.tsx": $6,
+    "./routes/tourney/[id].tsx": $7,
   },
   islands: {
     "./islands/DemoSelector.tsx": $$0,
