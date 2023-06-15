@@ -103,7 +103,7 @@ export default function ({ data, url }: PageProps<Data>) {
       <Head>
         <title>Connect</title>
       </Head>
-      <div class="m-7 col-span-3">
+      <div class="m-7 col-span-6 sm:col-span-3">
         <p class="my-2">Fill out this form to connect your account.</p>
         <form method="post" action="" class="space-y-5 flex flex-col w-80">
           <div class="space-x-2">
@@ -134,9 +134,8 @@ export default function ({ data, url }: PageProps<Data>) {
             />
           </div>
           <button
-            class="p-3 bg-blue-100 disabled:bg-gray-100 disabled:cursor-auto
-  rounded shadow hover:bg-blue-200 transition-colors duration-300
-  mx-auto w-max"
+            class="p-2 bg-[#FDBEB0] rounded mx-auto text-lg shadow 
+           font-bold border-black hover:bg-[#FA7E61] transition-colors"
             type="submit"
           >
             Submit

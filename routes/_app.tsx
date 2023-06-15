@@ -25,13 +25,15 @@ export default function App({ Component }: AppProps) {
         class="relative top-0 bottom-0 left-0 w-screen
       right-0 min-h-screen flex flex-col justify-between"
       >
-        <h1 class="text-5xl text-center my-3 font-header">Stone, Bone, Cone</h1>
+        <h1 class="text-5xl text-center my-3 font-header p-2">
+          Stone, Bone, Cone
+        </h1>
         <div class="py-4 mx-auto max-w-screen-lg space-y-5 flex-grow">
-          <main class="grid grid-cols-6 md:min-w-[750px]">
+          <main class="sm:grid grid-cols-6 md:min-w-[750px]">
             <Component />
           </main>
         </div>
-        <footer class="mt-8">
+        <footer class="mt-8 p-3">
           <p>made by The Abe Train for the Deno KV Hackathon, June 15, 2023</p>
         </footer>
       </div>

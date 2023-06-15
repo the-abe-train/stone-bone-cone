@@ -16,8 +16,8 @@ export default function ({ queue, setQueue }: Props) {
     setTarget(emptySquare);
   }, [queue]);
   return (
-    <div class="text-center space-y-4 max-w-screen-sm w-full">
-      <div class="flex justify-around space-x-2">
+    <div class="text-center space-y-4 sm:max-w-screen-sm w-full">
+      <div class="flex justify-around flex-wrap sm:flex-no-wrap space-x-2">
         {[...Array(QUEUE_LENGTH)].map((_, i) => {
           return (
             <div

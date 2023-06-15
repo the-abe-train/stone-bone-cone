@@ -92,7 +92,7 @@ export default function ({ data, url }: PageProps<Data>) {
         <title>Stone, Bone, Cone</title>
       </Head>
       <div className="col-span-2 space-y-8">
-        <div class="flex flex-col space-y-2">
+        <div class="flex flex-col space-y-2 p-2">
           <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
             Rankings
           </h2>
@@ -114,7 +114,7 @@ export default function ({ data, url }: PageProps<Data>) {
             See more...
           </a>
         </div>
-        <div class="space-y-2">
+        <div class="space-y-2 p-2">
           <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
             Username: {data.user.name}
           </h2>
