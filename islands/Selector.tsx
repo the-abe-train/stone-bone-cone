@@ -1,16 +1,17 @@
 import { useEffect, useState } from "preact/hooks";
-import { QUEUE_LENGTH } from "../util/constants.ts";
+import { QUEUE_LENGTH, WEAPONS } from "../util/constants.ts";
+import { Weapon } from "../util/types.ts";
 
 type Props = {
-  queue: string[];
-  setQueue: (queue: string[]) => void;
+  queue: (Weapon | null)[];
+  setQueue: (queue: (Weapon | null)[]) => void;
 };
 
 export default function ({ queue, setQueue }: Props) {
   const [target, setTarget] = useState(0);
   useEffect(() => {
     // If there's an empty square, set it as the target
-    const emptySquare = queue.findIndex((x) => x === "nothing");
+    const emptySquare = queue.findIndex((x) => !x);
     if (emptySquare === -1) return;
     setTarget(emptySquare);
   }, [queue]);
@@ -26,7 +27,7 @@ export default function ({ queue, setQueue }: Props) {
               onClick={() => setTarget(i)}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
-                const choice = e.dataTransfer?.getData("text/plain");
+                const choice = e.dataTransfer?.getData("text/plain") as Weapon;
                 if (!choice) return;
                 const newQueue = [...queue];
                 newQueue[i] = choice;
@@ -35,13 +36,13 @@ export default function ({ queue, setQueue }: Props) {
               onDragEnter={() => setTarget(i)}
               onDblClick={() => {
                 const newQueue = [...queue];
-                newQueue[i] = "nothing";
+                newQueue[i] = null;
                 setQueue(newQueue);
               }}
             >
               <img
-                src={queue[i] + ".png"}
-                alt={queue[i]}
+                src={`${queue[i] || "nothing"}.png`}
+                alt={queue[i] || "empty"}
                 width={80}
                 height={80}
                 class="m-0"
@@ -52,7 +53,7 @@ export default function ({ queue, setQueue }: Props) {
         })}
       </div>
       <div class="flex justify-center space-x-6">
-        {["stone", "bone", "cone"].map((x) => {
+        {WEAPONS.map((x) => {
           return (
             <img
               src={`/${x}.png`}

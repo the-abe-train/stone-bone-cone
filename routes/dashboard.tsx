@@ -5,11 +5,14 @@ import { redirectToLogin } from "../util/redirect.ts";
 import { User, Weapon } from "../util/types.ts";
 import GameSelector from "../islands/GameSelector.tsx";
 import { getNextTourney } from "../util/tourney.ts";
+import { QUEUE_LENGTH } from "../util/constants.ts";
 
 type Data = {
   user: User;
+  queue?: Weapon[];
   nextTourneyId: number;
   nextTourneyTime: string;
+  lockedInCount: number;
 };
 
 export const handler: Handlers<Data> = {
@@ -21,7 +24,27 @@ export const handler: Handlers<Data> = {
       return new Response("Error: No tourney found", {
         status: 500,
       });
-    return ctx.render!({ user, ...nextTourney });
+
+    // Get existing queue from KV
+    const kv = await Deno.openKv();
+    const queueRes = await kv.get(["attacks", nextTourney.id, user.name]);
+    const queue = queueRes.value as Weapon[] | undefined;
+    console.log(queue);
+
+    // Get number of total locked in players
+    const lockedInList = kv.list({ prefix: ["attacks", nextTourney.id] });
+    let lockedInCount = 0;
+    for await (const { key } of lockedInList) {
+      if (key[2]) lockedInCount++;
+    }
+
+    return ctx.render!({
+      user,
+      queue: queue,
+      nextTourneyId: nextTourney.id,
+      nextTourneyTime: nextTourney.time,
+      lockedInCount,
+    });
   },
 
   async POST(req) {
@@ -35,11 +58,18 @@ export const handler: Handlers<Data> = {
         status: 400,
       });
     const queue = queueParam.split(",").map((weapon) => weapon as Weapon);
+    const nextTourney = await getNextTourney();
+    if (!nextTourney)
+      return new Response("Error: No tourney found", {
+        status: 500,
+      });
+    const tourneyId = nextTourney.id;
+
     const kv = await Deno.openKv();
-    await kv.set(["users", user.name], JSON.stringify({ ...user, queue }));
+    await kv.set(["attacks", tourneyId, user.name], queue);
 
     const headers = new Headers();
-    headers.set("location", "/dashboard?message=locked_in");
+    headers.set("location", "/dashboard?lockedin=true");
     return new Response(null, {
       status: 303,
       headers,
@@ -48,11 +78,14 @@ export const handler: Handlers<Data> = {
 };
 
 export default function ({ data, url }: PageProps<Data>) {
-  const { nextTourneyId, nextTourneyTime } = data;
+  const searchParams = new URLSearchParams(url.search);
+  const { nextTourneyId, nextTourneyTime, queue, lockedInCount } = data;
+  const lockedIn = searchParams.get("lockedin") === "true" || Boolean(queue);
   const last4Tourneys = [...Array(3)].map((_, i) => {
     return nextTourneyId - i - 1;
   });
-  console.log(last4Tourneys);
+  const defaultQueue = queue || [...Array(QUEUE_LENGTH)].map(() => null);
+
   return (
     <>
       <Head>
@@ -60,18 +93,18 @@ export default function ({ data, url }: PageProps<Data>) {
       </Head>
       <div className="col-span-2 space-y-8">
         <div class="flex flex-col space-y-2">
-          <h2 class="text-xl">Your rankings</h2>
+          <h2 class="text-xl">Rankings</h2>
           {last4Tourneys.map((tourneyId) => {
+            const isLastTourney = tourneyId === nextTourneyId - 1;
             return (
               <a
                 href={`/tourney/${tourneyId}`}
                 class="p-2 w-2/3 bg-gray-100 rounded"
                 style={{
-                  fontWeight:
-                    tourneyId === nextTourneyId - 1 ? "bold" : "normal",
+                  fontWeight: isLastTourney ? "bold" : "normal",
                 }}
               >
-                Tourney {tourneyId}
+                Tourney {tourneyId} {isLastTourney && "(recent)"}
               </a>
             );
           })}
@@ -108,8 +141,12 @@ export default function ({ data, url }: PageProps<Data>) {
         <p>
           Tourney {nextTourneyId} starts in {nextTourneyTime}.
         </p>
-        <GameSelector />
-        <p>92 players currently locked-in for Tourney {nextTourneyId}</p>
+        <GameSelector defaultQueue={defaultQueue} />
+        <p>{lockedIn && "Your weapons are locked-in!"}</p>
+        <p>
+          {lockedInCount} player{lockedInCount !== 1 && "s"} currently locked-in
+          for Tourney {nextTourneyId}
+        </p>
       </div>
     </>
   );

@@ -25,8 +25,8 @@ export async function getNextTourney() {
     )
   );
   const nextTourney = {
-    nextTourneyId: lastTourneyNumber + 1,
-    nextTourneyTime: timeTilNextTourney(nextTourneyUtc),
+    id: lastTourneyNumber + 1,
+    time: timeTilNextTourney(nextTourneyUtc),
   };
   return nextTourney;
 }
@@ -43,11 +43,20 @@ export function timeTilNextTourney(nextTime: Date) {
   return nextGameStr;
 }
 
-export function loadFakeTourneys() {
+export async function loadFakeTourneys() {
+  // Delete all existing tourneys
+  const allTourneys = kv.list<Tourney>({ prefix: ["tourneys"] });
+  for await (const tourney of allTourneys) {
+    await kv.delete(tourney.key);
+  }
+
   const times = [];
   let day = START_DATE;
-  const diff = () => dt.difference(day, new Date()).days ?? 0;
-  while (diff() > 0) {
+  const diff = () => {
+    const o = dt.difference(day, new Date());
+    return o.hours || 0;
+  };
+  while (diff() >= 12 && times.length < 50) {
     day = new Date(
       Date.UTC(
         day.getUTCFullYear(),
@@ -60,17 +69,17 @@ export function loadFakeTourneys() {
     times.push(time);
   }
   const randNumber = () => Math.floor(Math.random() * 100);
-  times.forEach((time, i) => {
+  times.forEach(async (time, i) => {
     const tourney: Tourney = {
       time,
-      winner: `player_${randNumber()}}`,
+      winner: `player_${randNumber()}`,
       attacks: {
         stone: randNumber(),
-        bone: 0,
-        cone: 0,
+        bone: randNumber(),
+        cone: randNumber(),
       },
     };
-    kv.set(["tourneys", i], tourney);
+    await kv.set(["tourneys", i], tourney);
   });
 }
 
