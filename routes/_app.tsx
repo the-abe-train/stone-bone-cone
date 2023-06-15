@@ -14,11 +14,24 @@ export default function App({ Component }: AppProps) {
         <meta name="MobileOptimized" content="375" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta name="theme-color" content="#ffffff" />
-        {/* <link rel="canonical" href="https://chronogram.chat" />
+        <link rel="canonical" href="https://stonebonecone.com" />
+        <meta name="description" content="A pre-historic battle royale!" />
+        {/* <!-- Open Graph --> */}
+        <meta property="og:title" content="Stone, Bone, Cone" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://stonebonecone.com" />
         <meta
-          name="description"
-          content="Try to identify famous historical figures that have been recreated by AI!"
-        /> */}
+          property="og:image"
+          content="https://stonebonecone.com/opengraph.png"
+        />
+        <meta property="og:image:alt" content="logo" />
+        <meta property="og:image:width" content="900" />
+        <meta property="og:image:height" content="900" />
+        <meta
+          property="og:description"
+          content="A pre-historic battle royale!"
+        />
+        <meta property="og:site_name" content="Stone, Bone, Cone" />
       </Head>
 
       <div
