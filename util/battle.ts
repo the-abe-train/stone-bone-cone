@@ -1,5 +1,6 @@
 import { QUEUE_LENGTH } from "./constants.ts";
-import { Weapon, Player, Result, Tourney } from "./types.ts";
+import { generateFakePlayers } from "./fakes.ts";
+import { Weapon, Player, Result, Tourney, Attack } from "./types.ts";
 
 export function runBattle(a1: Weapon, a2: Weapon) {
   // 0 = tie, 1 = a1 wins, 2 = a2 wins
@@ -85,8 +86,8 @@ export function runTourneyDemo(players: Player[]) {
 
 const kv = await Deno.openKv();
 
-async function getPlayers(tourneyId: number) {
-  const allQueues = kv.list<Weapon[]>({ prefix: ["attacks", tourneyId] });
+export async function getPlayers(tourneyId: number) {
+  const allQueues = kv.list<Attack>({ prefix: ["attacks", tourneyId] });
   const players = [];
   for await (const queue of allQueues) {
     const player: Player = {
@@ -95,13 +96,17 @@ async function getPlayers(tourneyId: number) {
     };
     players.push(player);
   }
+  console.log(players);
   return players;
 }
 
 export async function runTourneyKv(tourneyId: number, time: string) {
   // Get all players with queues for this tourney from KV
-  const totalPlayers = await getPlayers(tourneyId);
-  let players = totalPlayers;
+  const fakePlayers = generateFakePlayers(16);
+  const realPlayers = await getPlayers(tourneyId);
+  const numPlayers = fakePlayers.length + realPlayers.length;
+  let players = [...fakePlayers, ...realPlayers];
+  console.log(`Total players: ${players.length}`);
 
   let round = 1;
   const tourneyResults: Result[][] = [];
@@ -152,7 +157,7 @@ export async function runTourneyKv(tourneyId: number, time: string) {
   const tourney: Tourney = {
     time,
     winners: players.map((p) => p.name),
-    numPlayers: totalPlayers.length,
+    numPlayers,
     attacks: weaponStats,
     rounds: round - 1,
   };

@@ -86,9 +86,14 @@ export const handler: Handlers<Data> = {
       userMatches.push(...results);
       const kv = await Deno.openKv();
       const tourney = await kv.get<Tourney>(["tourneys", tourneyId]);
-      console.log({ tourney });
+      const userQueue = await kv.get<Weapon[]>([
+        "attacks",
+        tourneyId,
+        user.name,
+      ]);
       if (!tourney.value)
         return new Response("Tournament not found", { status: 404 });
+      console.log(tourney.value);
       const { rounds, winners, attacks, numPlayers } = tourney.value;
 
       const tourneyStats = { winners, rounds, numPlayers };
@@ -98,6 +103,7 @@ export const handler: Handlers<Data> = {
         userMatches,
         weaponStats: attacks,
         tourneyStats,
+        userQueue: userQueue.value ?? [],
       });
       return resp;
     }
@@ -117,13 +123,15 @@ type Data = {
     numPlayers: number;
     // losers: number;
   };
+  userQueue?: Weapon[];
 };
 
 export default function ({ data, url, params }: PageProps<Data>) {
   const { userMatches, weaponStats, tourneyStats } = data;
   const searchParams = new URLSearchParams(url.search);
   const queueParam = searchParams.get("queue");
-  const yourQueue = queueParam?.split(",").map((x) => x as Weapon);
+  const yourQueue =
+    data.userQueue ?? queueParam?.split(",").map((x) => x as Weapon);
   const tourneyId = parseInt(params.id);
   const isDemo = !tourneyId;
   const youParticipated = userMatches.length > 0;
@@ -167,7 +175,7 @@ export default function ({ data, url, params }: PageProps<Data>) {
       <div class="space-y-12 col-span-3 flex flex-col items-center">
         {youParticipated && (
           <div class="space-y-4">
-            <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
+            <h2 class="text-2xl text-center sm:text-left font-header">
               {" "}
               Your attacks
             </h2>
@@ -189,7 +197,7 @@ export default function ({ data, url, params }: PageProps<Data>) {
           </div>
         )}
         <div class="space-y-2 my-6">
-          <h2 class="text-2xl" style={{ fontFamily: "Lilita One" }}>
+          <h2 class="text-2xl text-center sm:text-left font-header">
             Tourney Stats
           </h2>
           <div class="flex space-x-5">

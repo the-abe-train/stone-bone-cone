@@ -4,7 +4,7 @@ import { getUserFromSession } from "../util/queries.ts";
 import { redirectToLogin } from "../util/redirect.ts";
 import { User, Weapon } from "../util/types.ts";
 import GameSelector from "../islands/GameSelector.tsx";
-import { getNextTourney } from "../util/tourney.ts";
+import { getNextTourney, timeTilNextTourney } from "../util/tourney.ts";
 import { QUEUE_LENGTH } from "../util/constants.ts";
 
 type Data = {
@@ -42,7 +42,7 @@ export const handler: Handlers<Data> = {
       user,
       queue: queue,
       nextTourneyId: nextTourney.id,
-      nextTourneyTime: nextTourney.time,
+      nextTourneyTime: timeTilNextTourney(nextTourney.time),
       lockedInCount,
     });
   },

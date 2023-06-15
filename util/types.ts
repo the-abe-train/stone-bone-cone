@@ -13,6 +13,9 @@ export type Result = {
   winner: Player[];
 };
 
+// Key: attacks, tourney id, user
+export type Attack = Weapon[];
+
 export type User = {
   name: string;
   password: string;

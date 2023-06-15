@@ -1,7 +1,11 @@
 import { Head } from "$fresh/runtime.ts";
 import { Handlers, PageProps } from "$fresh/server.ts";
 import DemoSelector from "../islands/DemoSelector.tsx";
-import { getNextTourney, loadFakeTourneys } from "../util/tourney.ts";
+import {
+  getNextTourney,
+  loadFakeTourneys,
+  timeTilNextTourney,
+} from "../util/tourney.ts";
 
 type Data = {
   nextTourneyId: number;
@@ -14,14 +18,14 @@ export const handler: Handlers<Data> = {
     if (nextTourney)
       return ctx.render!({
         nextTourneyId: nextTourney.id,
-        nextTourneyTime: nextTourney.time,
+        nextTourneyTime: timeTilNextTourney(nextTourney.time),
       });
     else {
       await loadFakeTourneys();
       const nextTourney = await getNextTourney();
       return ctx.render!({
-        nextTourneyId: nextTourney?.id || 0,
-        nextTourneyTime: nextTourney?.time || "never",
+        nextTourneyId: nextTourney.id,
+        nextTourneyTime: timeTilNextTourney(nextTourney.time),
       });
     }
   },
@@ -37,8 +41,7 @@ export default function ({ data }: PageProps<Data>) {
       </Head>
       <div class="col-span-4 space-y-6 m-2">
         <p>
-          Every 12 hours, all the cavepeople get together and have a battle
-          royale!
+          Every hour, all the cavepeople get together and have a battle royale!
         </p>
         <p>
           Before every battle, you must equip your cave person with their

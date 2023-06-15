@@ -14,9 +14,13 @@ export const handler: Handlers = {
 
       // Get next tourney info
       const nextTourney = await getNextTourney();
+      console.log(nextTourney);
+      if (!nextTourney) {
+        return new Response("No tourney found", { status: 404 });
+      }
 
       // Push tourney to KV
-      await runTourneyKv(nextTourney.id, nextTourney.time);
+      await runTourneyKv(nextTourney.id, nextTourney.time.toUTCString());
 
       return new Response(`Successfully ran Tourney ${nextTourney.id}!`);
     } catch (e) {

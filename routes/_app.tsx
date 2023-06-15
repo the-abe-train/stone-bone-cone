@@ -54,7 +54,7 @@ export default function App({ Component }: AppProps) {
 
       <div
         class="relative top-0 bottom-0 left-0 w-screen
-      right-0 min-h-screen flex flex-col justify-between"
+      right-0 min-h-screen flex flex-col justify-between items-center"
       >
         <h1 class="text-5xl text-center my-3 font-header p-2">
           Stone, Bone, Cone
@@ -64,7 +64,7 @@ export default function App({ Component }: AppProps) {
             <Component />
           </main>
         </div>
-        <footer class="mt-8 p-3 flex w-full justify-between">
+        <footer class="mt-8 p-3 flex w-full justify-between max-w-screen-lg mx-atuo">
           <p>by The Abe Train</p>
           <a
             class="underline"

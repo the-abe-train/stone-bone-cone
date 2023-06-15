@@ -11,22 +11,31 @@ export async function getNextTourney() {
   );
   const lastTourneyIter = await allTourneys.next();
   const lastTourney = lastTourneyIter.value;
-  if (!lastTourney) return;
+  const nextTourneyUtc = getNextTime();
+  if (!lastTourney)
+    return {
+      id: 0,
+      time: nextTourneyUtc,
+    };
   const lastTourneyNumber = Number(lastTourney.key[1]) ?? 0;
-  const lastTourneyTime = new Date(lastTourney.value.time);
-  const nextTourneyUtc = new Date(
-    Date.UTC(
-      lastTourneyTime.getUTCFullYear(),
-      lastTourneyTime.getUTCMonth(),
-      lastTourneyTime.getUTCDate(),
-      lastTourneyTime.getUTCHours() + 12
-    )
-  );
   const nextTourney = {
     id: lastTourneyNumber + 1,
-    time: timeTilNextTourney(nextTourneyUtc),
+    time: nextTourneyUtc,
   };
   return nextTourney;
+}
+
+// Function that returns the next hour in UTC
+function getNextTime() {
+  const nextTime = new Date(
+    Date.UTC(
+      new Date().getUTCFullYear(),
+      new Date().getUTCMonth(),
+      new Date().getUTCDate(),
+      new Date().getUTCHours() + 1
+    )
+  );
+  return nextTime;
 }
 
 export function timeTilNextTourney(nextTime: Date) {
@@ -37,7 +46,7 @@ export function timeTilNextTourney(nextTime: Date) {
   if (!minutes) return "";
   const hoursLeft = Math.floor(minutes / 60);
   const minutesLeft = Math.floor((minutes / 60 - hoursLeft) * 60);
-  const nextGameStr = `${hoursLeft}h ${minutesLeft}m`;
+  const nextGameStr = `${minutesLeft} minutes`;
   return nextGameStr;
 }
 
