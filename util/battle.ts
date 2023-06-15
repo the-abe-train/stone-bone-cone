@@ -1,5 +1,5 @@
 import { QUEUE_LENGTH } from "./constants.ts";
-import { Weapon, Battle, Player } from "./types.ts";
+import { Weapon, Player, Result, Tourney } from "./types.ts";
 
 export function runBattle(a1: Weapon, a2: Weapon) {
   // 0 = tie, 1 = a1 wins, 2 = a2 wins
@@ -12,7 +12,7 @@ export function runBattle(a1: Weapon, a2: Weapon) {
 }
 
 function battleQueue(p1: Player, p2: Player) {
-  const result: Battle = { player1: p1, player2: p2, winner: [] };
+  const result: Result = { player1: p1, player2: p2, winner: [] };
   for (let i = 0; i < QUEUE_LENGTH; i++) {
     const winner = runBattle(p1.queue[i], p2.queue[i]);
     if (winner === 1) {
@@ -33,11 +33,11 @@ function battleQueue(p1: Player, p2: Player) {
 
 function completeRound(players: Player[]) {
   // const winners = [];
-  const fights: Battle[] = [];
+  const fights: Result[] = [];
   // If there are an odd number of players, pop one from the round and add him to the winner’s array
   if (players.length % 2 === 1) {
     const leftover = players.pop()!;
-    const result: Battle = {
+    const result: Result = {
       player1: leftover,
       player2: null,
       winner: [leftover],
@@ -57,8 +57,6 @@ function completeRound(players: Player[]) {
   for (const pair of pairs) {
     const result = battleQueue(pair[0], pair[1]);
     fights.push(result);
-    // const winner = result.winner
-    // winners.push(...winner);
   }
 
   return fights;
@@ -66,12 +64,12 @@ function completeRound(players: Player[]) {
 
 export function runTourneyDemo(players: Player[]) {
   let round = 1;
-  const roundResults = [];
+  const tourneyResults: Result[][] = [];
   while (players.length > 1) {
     console.log(`Round ${round}`);
     const shuffledPlayers = players.sort(() => Math.random() - 0.5);
     const results = completeRound(shuffledPlayers);
-    roundResults.push(results);
+    tourneyResults.push(results);
     const winners = results.map((result) => result.winner).flat();
     if (players.length === winners.length) {
       console.log("Final round tie!");
@@ -82,7 +80,7 @@ export function runTourneyDemo(players: Player[]) {
   }
   const winner = players[0];
   console.log(`Winner: ${winner.name}`);
-  return roundResults;
+  return tourneyResults;
 }
 
 const kv = await Deno.openKv();
@@ -102,15 +100,16 @@ async function getPlayers(tourneyId: number) {
 
 export async function runTourneyKv(tourneyId: number, time: string) {
   // Get all players with queues for this tourney from KV
-  let players = await getPlayers(tourneyId);
+  const totalPlayers = await getPlayers(tourneyId);
+  let players = totalPlayers;
 
   let round = 1;
-  const roundResults = [];
+  const tourneyResults: Result[][] = [];
   while (players.length > 1) {
     console.log(`Round ${round}`);
     const shuffledPlayers = players.sort(() => Math.random() - 0.5);
     const results = completeRound(shuffledPlayers);
-    roundResults.push(results);
+    tourneyResults.push(results);
     const winners = results.map((result) => result.winner).flat();
     if (players.length === winners.length) {
       console.log("Final round tie!");
@@ -122,44 +121,51 @@ export async function runTourneyKv(tourneyId: number, time: string) {
     for (const result of results) {
       const p1 = result.player1;
       const p1Key = ["results", tourneyId, p1.name, round];
-      await kv.set(p1Key, {
-        userWeapons: p1.queue,
-        opponent: result.player2?.name,
-        opponentWeapons: result.player2?.queue,
-      });
+      const p1Result: Result = {
+        player1: p1,
+        player2: result.player2,
+        winner: result.winner,
+      };
+      await kv.set(p1Key, p1Result);
 
       if (result.player2) {
         const p2 = result.player2;
         const p2Key = ["results", tourneyId, p2.name, round];
-        await kv.set(p2Key, {
-          userWeapons: p2.queue,
-          opponent: result.player1?.name,
-          opponentWeapons: result.player1?.queue,
-        });
+        const p2Result: Result = {
+          player1: p2,
+          player2: result.player1,
+          winner: result.winner,
+        };
+        await kv.set(p2Key, p2Result);
       }
     }
 
     round++;
   }
-  const winner = players[0];
-  console.log(`Winner: ${winner.name}`);
+  const winnerNames = players.map((w) => w.name).join(" and ");
+  const winnerStr = winnerNames + " won the tournament!";
+  console.log(`Winner: ${winnerStr}`);
 
   // Save tourney to KV
-  const tourneyKey = ["tourney", tourneyId];
-  const weaponStats = calcWeaponStats(roundResults);
-  await kv.set(tourneyKey, {
+  const tourneyKey = ["tourneys", tourneyId];
+  const weaponStats = calcWeaponStats(tourneyResults);
+  const tourney: Tourney = {
     time,
-    winner: winner.name,
+    winners: players.map((p) => p.name),
+    numPlayers: totalPlayers.length,
     attacks: weaponStats,
-  });
+    rounds: round - 1,
+  };
 
-  return roundResults;
+  await kv.set(tourneyKey, tourney);
+
+  return tourneyResults;
 }
 
 // Turn the tourney into a tree data structure
 // Extract one player's journey through the tree
 
-export function calcWeaponStats(results: Battle[][]) {
+export function calcWeaponStats(results: Result[][]) {
   const weaponStats = {
     stone: 0,
     bone: 0,
@@ -175,4 +181,13 @@ export function calcWeaponStats(results: Battle[][]) {
     }
   }
   return weaponStats;
+}
+
+export async function getTourneyResults(tourneyId: number, user: string) {
+  const allResults = kv.list<Result>({ prefix: ["results", tourneyId, user] });
+  const results: Result[] = [];
+  for await (const result of allResults) {
+    results.push(result.value);
+  }
+  return results;
 }

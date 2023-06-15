@@ -68,17 +68,22 @@ export async function loadFakeTourneys() {
     const time = dt.format(day, "yyyy-MM-dd HH:mm");
     times.push(time);
   }
+  const rounds = 4;
+  const players = 2 ^ rounds;
   const randNumber = () => Math.floor(Math.random() * 100);
   times.forEach(async (time, i) => {
     const tourney: Tourney = {
       time,
-      winner: `player_${randNumber()}`,
+      winners: [`player_${randNumber()}`],
+      numPlayers: players,
       attacks: {
         stone: randNumber(),
         bone: randNumber(),
         cone: randNumber(),
       },
+      rounds,
     };
+    console.log(`Adding tourney ${i}`);
     await kv.set(["tourneys", i], tourney);
   });
 }

@@ -11,6 +11,7 @@ import * as $4 from "./routes/dashboard.tsx";
 import * as $5 from "./routes/demo.tsx";
 import * as $6 from "./routes/index.tsx";
 import * as $7 from "./routes/profile.tsx";
+import * as $8 from "./routes/tourney/[id].tsx";
 import * as $$0 from "./islands/DemoSelector.tsx";
 import * as $$1 from "./islands/GameSelector.tsx";
 import * as $$2 from "./islands/Selector.tsx";
@@ -25,6 +26,7 @@ const manifest = {
     "./routes/demo.tsx": $5,
     "./routes/index.tsx": $6,
     "./routes/profile.tsx": $7,
+    "./routes/tourney/[id].tsx": $8,
   },
   islands: {
     "./islands/DemoSelector.tsx": $$0,

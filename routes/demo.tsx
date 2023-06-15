@@ -4,7 +4,7 @@ import { DisplayRound } from "../components/DisplayRound.tsx";
 import { calcWeaponStats, runTourneyDemo } from "../util/battle.ts";
 import { FAKE_PLAYERS, WEAPONS } from "../util/constants.ts";
 import { generateFakePlayers } from "../util/fakes.ts";
-import { Weapon, Battle, Player } from "../util/types.ts";
+import { Weapon, Result, Player } from "../util/types.ts";
 
 export const handler: Handlers<Data> = {
   async GET(req, ctx) {
@@ -31,7 +31,7 @@ export const handler: Handlers<Data> = {
     const results = runTourneyDemo(players);
 
     // Pull the results involving the user
-    const userMatches: Battle[] = [];
+    const userMatches: Result[] = [];
     const rounds = results.length;
     for (let i = 0; i < rounds; i++) {
       const round = results[i];
@@ -81,7 +81,7 @@ export const handler: Handlers<Data> = {
 };
 
 type Data = {
-  userMatches: Battle[];
+  userMatches: Result[];
   weaponStats: {
     stone: number;
     bone: number;

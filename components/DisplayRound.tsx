@@ -10,9 +10,9 @@ function DisplayFight({ weapons }: { weapons: { w1: Weapon; w2: Weapon }[] }) {
           result === 1 ? "beats" : result === 0 ? "ties with" : "loses to";
         return (
           <div class="flex space-x-2 items-center">
-            <img src={`${w1}.png`} alt={w1} width={50} />
+            <img src={`/${w1}.png`} alt={w1} width={50} />
             <p>{resultString}</p>
-            <img src={`${w2}.png`} alt={w2} width={50} />
+            <img src={`/${w2}.png`} alt={w2} width={50} />
           </div>
         );
       })}

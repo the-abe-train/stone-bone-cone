@@ -6,7 +6,8 @@ export type Player = {
   queue: Weapon[];
 };
 
-export type Battle = {
+// Key: results, tourney id, user, round number
+export type Result = {
   player1: Player;
   player2: Player | null;
   winner: Player[];
@@ -23,13 +24,8 @@ export type Session = {
 
 export type Tourney = {
   time: string;
-  winner: string;
+  numPlayers: number;
+  winners: string[];
   attacks: Record<Weapon, number>;
-};
-
-// Key: results, tourney id, user, round number
-export type Ranking = {
-  userWeapons: Weapon[];
-  opponent?: string;
-  opponentWeapons?: Weapon[];
+  rounds: number;
 };

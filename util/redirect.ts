@@ -20,6 +20,15 @@ export function redirectToLogin(req: Request, reason: string) {
   });
 }
 
+export function redirectToHome() {
+  const headers = new Headers();
+  headers.set("location", "/");
+  return new Response(null, {
+    status: 303,
+    headers,
+  });
+}
+
 export async function newSession(req: Request, userName: string) {
   const url = new URL(req.url);
   const kv = await Deno.openKv();
